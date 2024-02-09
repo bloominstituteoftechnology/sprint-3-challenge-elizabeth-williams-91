@@ -45,7 +45,7 @@
     // ❗ Debug properly using the Console
 
     // 👉 CHALLENGE 1 - Integers
-    class Integers {
+    
       // 🧠 Constructor takes **any** number of arguments, which are integers
       // 🧠 Instances have an `ints` property which is an array holding the integers above in the same order
       // 🧠 Implement a `getAll` method which returns the data held in the `ints` property
@@ -58,11 +58,50 @@
       // 🧠 Implement a `getAllReversed` method which returns the ints in reverse order
       // ❗ WARNING: except for `getAllReversed`, methods must respect the order of the integers
       // ❗ WARNING: note that none of the methods actually mutate the `ints` property
-
+      class Integers {
+    constructor(...args) {
+        this.ints = [...args];
     }
 
+    getAll() {
+        return this.ints;
+    }
+
+    getEvens() {
+        return this.ints.filter(num => num % 2 === 0);
+    }
+
+    getNegatives() {
+        return this.ints.filter(num => num < 0);
+    }
+
+    getAllSquared() {
+        return this.ints.map(num => num * num);
+    }
+
+    pop() {
+        const lastInt = this.ints[this.ints.length - 1];
+        this.ints = this.ints.slice(0, -1);
+        return lastInt;
+    }
+
+    push(num) {
+        this.ints.push(num);
+        return this.ints;
+    }
+
+    getEveryNth(n) {
+        return this.ints.filter((_, index) => index % n === 0);
+    }
+
+    getAllReversed() {
+        return [...this.ints].reverse();
+    }
+}
+    
+
     // 👉 CHALLENGE 2 NerfGun
-    class NerfGun {
+    
       // 🧠 Constructor takes one argument: the total number of projectiles supported by the instance
       // 🧠 New instances initialize fully loaded and with the safety on
       // 🧠 Instances have a `shoot` method that takes no arguments:
@@ -76,11 +115,42 @@
       //      * When engaging the safety, return "Safety enabled!"
       //      * When disengaging the safety, return "Safety disabled!"
       // 🌟 HINT: instances need to keep track of their maximum capacity as well as their current capacity
-
+      class NerfGun {
+    constructor(totalProjectiles) {
+        this.maxCapacity = totalProjectiles;
+        this.currentCapacity = totalProjectiles;
+        this.safetyOn = true;
     }
 
+    shoot() {
+        if (this.currentCapacity > 0 && !this.safetyOn) {
+            this.currentCapacity--;
+            return "Bang!";
+        } else {
+            return "Click!";
+        }
+    }
+
+    reload(amount) {
+        if (typeof(amount) !== "number" || amount <= 0) {
+            return "Error reloading!";
+        } else {
+            this.currentCapacity += amount;
+            if (this.currentCapacity > this.maxCapacity) {
+                this.currentCapacity = this.maxCapacity;
+            }
+            return `${this.currentCapacity} projectiles left!`;
+        }
+    }
+
+    toggleSafety() {
+        this.safetyOn = !this.safetyOn;
+        return this.safetyOn ? "Safety enabled!" : "Safety disabled!";
+    }
+}
+
     // 👉 CHALLENGE 3 EBook
-    class EBook {
+    
       // 🧠 Constructor takes two arguments:
       //      * First arg is a string with the whole text of the book
       //      * Second arg is the number of characters contained in a single page of the book
@@ -95,11 +165,27 @@
       //    ebook.next() // returns null
       // 🌟 HINT: remember about the `slice` method which strings and arrays have
       // ❗ Feel free to implement `back`, although this is not required nor graded
-
+      class EBook {
+    constructor(text, charsPerPage) {
+        this.text = text;
+        this.charsPerPage = charsPerPage;
+        this.currentPage = 0;
     }
 
+    next() {
+        if (this.currentPage * this.charsPerPage >= this.text.length) {
+            return null;
+        }
+
+        const start = this.currentPage * this.charsPerPage;
+        const end = start + this.charsPerPage;
+        this.currentPage++;
+        return this.text.slice(start, end);
+    }
+  }
+
     // 👉 CHALLENGE 4 AntFarm
-    class AntFarm {
+   
       // 🧠 Constructor takes **any** number of arguments, which are strings: the names of your ants
       // 🧠 Instances of AntFarm have an `ants` property holding an array of ants:
       //      * Each ant is an object with a `name` prop and a `health` prop that starts at 100
@@ -131,7 +217,42 @@
       // 👉 HINT: if you are not feeling confident with map and filter, solve the problem with for loops,
       //      and with the piece of mind of all tests passing, refactor to use map/filter
 
+      class AntFarm {
+    constructor(...args) {
+        this.ants = args.map(name => ({ name, health: 100 }));
     }
+
+    work() {
+        const startingAnts = this.ants.length;
+
+        if (startingAnts === 0) {
+            return "No ants here. Did you work them to death?";
+        }
+
+        this.ants = this.ants.map(ant => {
+            ant.health -= 20;
+            return ant;
+        }).filter(ant => ant.health > 0);
+
+        return `${startingAnts} ants starting work!`;
+    }
+
+    feed(antName) {
+        let fed = false;
+
+        this.ants = this.ants.map(ant => {
+            if (ant.name === antName) {
+                ant.health += 15;
+                fed = true;
+            }
+            return ant;
+        });
+
+        return fed ? "Yum!" : `${antName} not found!`;
+    }
+}
+
+ 
 
     // 🧪 TESTS, do not make any changes below this line ===================
     // 🧪 TESTS, do not make any changes below this line ===================
